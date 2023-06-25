@@ -1,26 +1,30 @@
+require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const app = express();
-const port = process.env.PORT || 3001;
+const Port = 3032;
+const router = express.Router();
 
-app.get("/", (req, res) => res.type('html').send(html));
+app.use("/", router);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.use(cors({ origin: "*" }));
 
-server.keepAliveTimeout = 120 * 1000;
-server.headersTimeout = 120 * 1000;
+app.listen(Port, () => {
+  console.log(`Server listening on port ${Port}`);
+});
 
-
-
-
-
-app.get('/get-price', async (req, res) => {
-  const apiKey = 'bc093fe3-1948-4939-8638-2c01e69a1afa';
+// ==><=== //
+app.get("/get-price", async (req, res) => {
+  const apiKey = "bc093fe3-1948-4939-8638-2c01e69a1afa";
   const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?convert_id=2796&id=24638`;
 
   const headers = {
-    Accepts: 'application/json',
-    'X-CMC_PRO_API_KEY': apiKey,
+    Accepts: "application/json",
+    "X-CMC_PRO_API_KEY": apiKey,
   };
 
   try {
@@ -36,8 +40,4 @@ app.get('/get-price', async (req, res) => {
   } catch (error) {
     res.json({ data: 778 });
   }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
 });
