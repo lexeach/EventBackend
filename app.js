@@ -2,6 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const databaseConnection = require("./db");
+const { getData } = require("./dataUpdater");
+const { MonitorLogs } = require("./registrationTracker");
 
 const app = express();
 const Port = 3032;
@@ -13,8 +16,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors({ origin: "*" }));
 
-app.listen(Port, () => {
-  console.log(`Server listening on port ${Port}`);
+databaseConnection(() => {
+  app.listen(Port, () => {
+    MonitorLogs()
+    console.log(`Server listening on port ${Port}`);
+  });
 });
 
 // ==><=== //
@@ -40,4 +46,8 @@ app.get("/get-price", async (req, res) => {
   } catch (error) {
     res.json({ data: 778 });
   }
+});
+
+app.get("/get-registartion", async function (req, res) {
+  await getData(req, res);
 });
